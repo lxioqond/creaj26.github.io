@@ -489,27 +489,180 @@ body {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* ── RESPONSIVE SYSTEM ── */
+
+/* Hamburger button (hidden on desktop) */
+.hamburger {
+  display: none;
+  align-items: center; justify-content: center;
+  width: 36px; height: 36px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.hamburger:hover { background: var(--border); }
+.hamburger svg { width: 18px; height: 18px; fill: none; stroke: var(--text); stroke-width: 2; stroke-linecap: round; }
+
+/* Overlay for mobile sidebar */
+.sidebar-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 99;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.sidebar-overlay.visible { opacity: 1; }
+
+/* Table scroll wrapper — applies on all widths, clips on mobile */
+.data-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.data-table { min-width: 520px; }
+
+/* ── 1024px — narrow desktop / landscape tablet ── */
+@media (max-width: 1024px) {
+  .stats-grid { grid-template-columns: repeat(4, 1fr); }
+  .charts-grid { grid-template-columns: repeat(2, 1fr); }
+  .content { padding: 22px 20px 60px; }
+}
+
+/* ── 900px — tablet landscape ── */
 @media (max-width: 900px) {
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .charts-grid { grid-template-columns: 1fr; }
 }
+
+/* ── 768px — tablet portrait / large phone ── */
 @media (max-width: 768px) {
-  .sidebar { width: 60px; }
-  .sidebar-logo-text, .sidebar-logo-sub, .sidebar-item span:not(.sidebar-icon) { display: none; }
-  .sidebar-item { justify-content: center; padding: 12px 0; }
-  .sidebar-footer .admin-email, .sidebar-footer .admin-info > div { display: none; }
-  .main-container { margin-left: 60px; }
-  .worker-card { flex-wrap: wrap; }
-  .worker-actions { width: 100%; }
-  .search-input { width: 100%; margin-left: 0; }
+  /* Show hamburger */
+  .hamburger { display: flex; }
+
+  /* Sidebar becomes an off-canvas drawer */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0;
+    width: 260px;
+    height: 100vh;
+    z-index: 110;
+    transform: translateX(-100%);
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: none;
+  }
+  .sidebar.open {
+    transform: translateX(0);
+    box-shadow: 24px 0 60px rgba(0,0,0,0.55);
+  }
+
+  /* Sidebar overlay becomes visible layer */
+  .sidebar-overlay { display: block; }
+
+  /* Main takes full width */
+  .main-container { margin-left: 0; }
+
+  /* Topbar gets hamburger slot */
+  .topbar { padding: 0 16px; gap: 12px; }
+
+  /* Content padding tighter */
+  .content { padding: 20px 16px 60px; }
+
+  /* Worker cards stack cleanly */
+  .worker-card { flex-wrap: wrap; gap: 12px; }
+  .worker-actions {
+    width: 100%;
+    justify-content: flex-start;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+    margin-top: 0;
+  }
+
+  /* Search bar full width */
+  .filters { gap: 8px; }
+  .search-input { width: 100%; margin-left: 0; order: 10; }
+
+  /* Config rows wrap */
+  .config-row { flex-wrap: wrap; }
+  .export-btns { flex-direction: column; }
+
+  /* Modal adjustments */
+  .modal { padding: 22px 18px; }
+
+  /* Historial filters stack */
+  #filter-historial-tipo { width: 100% !important; }
+  input#filter-historial-fecha { width: 100% !important; }
 }
-@media (max-width: 500px) {
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .content { padding: 16px 12px 40px; }
+
+/* ── 560px — small tablets / large phones ── */
+@media (max-width: 560px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .stat-card { padding: 16px 14px; }
+  .stat-value { font-size: 26px; }
+
+  .charts-grid { gap: 10px; }
+  .chart-card { padding: 16px; }
+
+  /* Table: scroll indicator hint */
+  .data-table-wrap::after {
+    content: '';
+    display: block;
+    height: 0;
+  }
+
+  /* Worker card: tighter */
+  .worker-card { padding: 14px 16px; }
+  .worker-avatar { width: 40px; height: 40px; font-size: 14px; }
+
+  /* Toast: don't overflow on small screens */
+  .toast { white-space: normal; text-align: center; max-width: 90vw; left: 50%; }
+
+  /* Modal full-bottom-sheet feel */
+  .modal-overlay { align-items: flex-end; padding: 0; }
+  .modal {
+    border-radius: 20px 20px 0 0;
+    max-height: 92vh;
+    padding: 20px 16px 32px;
+  }
+  .modal-actions { flex-direction: column; }
+  .modal-actions button { width: 100%; }
+
+  .topbar-sub { display: none; }
+
+  /* Form full-width buttons */
+  .btn-send { width: 100%; text-align: center; }
+}
+
+/* ── 420px — compact phones ── */
+@media (max-width: 420px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .stat-card { padding: 14px 12px; }
+  .stat-label { font-size: 10px; }
+  .stat-value { font-size: 24px; }
+  .content { padding: 14px 12px 40px; }
+  .section-heading h2 { font-size: 18px; }
+  .login-box { padding: 28px 20px; }
+  .filters { gap: 6px; }
+  .filter-btn { padding: 6px 11px; font-size: 11px; }
+
+  /* Worker card: action buttons wrap to 2-col grid */
+  .worker-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+  .worker-actions button { width: 100%; text-align: center; }
 }
 </style>
 </head>
 <body>
+
+<!-- Mobile sidebar overlay -->
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 
 <div id="login-screen">
   <div class="login-box">
@@ -583,6 +736,9 @@ body {
 
   <div class="main-container">
     <div class="topbar">
+      <button class="hamburger" id="hamburger-btn" onclick="toggleSidebar()" aria-label="Abrir menú">
+        <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
       <div>
         <div class="topbar-title" id="topbar-title">Dashboard</div>
         <div class="topbar-sub" id="topbar-sub">Resumen general del sistema</div>
@@ -915,7 +1071,7 @@ body {
     catch (e) { err.style.display = 'block'; btn.disabled = false; btn.textContent = 'Entrar al panel'; }
   };
 
-  window.doLogout = async () => { await signOut(auth); };
+  window.doLogout = async () => { closeSidebar(); await signOut(auth); };
 
   async function cargarTodo() {
     await Promise.all([cargarTrabajadores(), cargarClientes(), cargarReportes(), cargarHistorial(), cargarMensajes()]);
@@ -1505,6 +1661,54 @@ body {
   }
 
   document.getElementById('pass-input').addEventListener('keydown', e => { if (e.key === 'Enter') window.doLogin(); });
+
+  /* ── Mobile sidebar ── */
+  const sidebar  = document.querySelector('.sidebar');
+  const overlay  = document.getElementById('sidebar-overlay');
+
+  function isMobile() { return window.innerWidth <= 768; }
+
+  window.toggleSidebar = () => {
+    if (sidebar.classList.contains('open')) { closeSidebar(); } else { openSidebar(); }
+  };
+
+  window.openSidebar = () => {
+    sidebar.classList.add('open');
+    overlay.style.display = 'block';
+    requestAnimationFrame(() => overlay.classList.add('visible'));
+    document.body.style.overflow = 'hidden';
+  };
+
+  window.closeSidebar = () => {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('visible');
+    setTimeout(() => { overlay.style.display = 'none'; }, 260);
+    document.body.style.overflow = '';
+  };
+
+  /* Auto-close sidebar on tab switch in mobile */
+  const originalSwitchTab = window.switchTab;
+  window.switchTab = (tab, btn) => {
+    originalSwitchTab(tab, btn);
+    if (isMobile()) closeSidebar();
+  };
+
+  /* Close on resize to desktop */
+  window.addEventListener('resize', () => {
+    if (!isMobile()) {
+      sidebar.classList.remove('open');
+      overlay.style.display = 'none';
+      overlay.classList.remove('visible');
+      document.body.style.overflow = '';
+    }
+  });
+
+  let touchStartX = 0;
+  sidebar.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  sidebar.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (dx < -60 && isMobile()) closeSidebar();
+  }, { passive: true });
 </script>
 </body>
 </html>
